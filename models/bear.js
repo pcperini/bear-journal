@@ -10,13 +10,12 @@ class Bear {
   // MARK: Private
   async _request(func, body, key) {
     const resp = JSON.parse(await client.call(func, body))
-    console.log(resp[key]);
     if (key) { return JSON.parse(resp[key]) }
     return resp
   }
 
   async _batchRequest(func, body, key, followOn) {
-    const resp = await this._request(func, body, key)
+    const resps = await this._request(func, body, key)
     return Promise.all(resps.map(r => followOn(r)))
   }
 
@@ -35,12 +34,13 @@ class Bear {
 
   // MARK: Batch Getters
   async todoList() {
-    return (await this._batchRequest(
+    const x = (await this._batchRequest(
       'todo',
       { token: this.token},
       'notes',
       note => this.note(note.identifier)))
-      .map(data => new Note(data))
+    console.log(JSON.stringify(x))
+      // .map(data => new Note(data))
   }
 
   async notesForTag(tag) {
