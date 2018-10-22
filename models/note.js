@@ -9,6 +9,12 @@ class Note {
     this.modificationDate = new moment(data.modificationDate)
     this.isTrashed = data.is_trashed === 'yes'
     this.id = data.identifier
+
+    // handles bug where note can get broken into empty keys
+   Object.keys(data).forEach((key) => {
+     if (data[key] !== '') { return }
+     this.text += decodeURI(key).replace(/%23/g, '#')
+   })
   }
 
   get tags() {
